@@ -3,12 +3,11 @@ server:
   servlet:
     context-path: /
 
-elasticsearch:
-  host: 192.168.31.106
-  port: 9200
-  connTimeout: 3000
-  socketTimeout: 5000
-  connectionRequestTimeout: 500
+spring:
+  data:
+    elasticsearch:
+      cluster-name: my-application
+      cluster-nodes: localhost:9300
 
 logging:
   level.root: info
