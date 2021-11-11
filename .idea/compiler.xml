@@ -8,14 +8,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="demo-elasticsearch-rest-level-client" />
-        <module name="es-demo" />
+        <module name="demo-elasticsearch" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="demo" target="1.8" />
       <module name="demo-elasticsearch" target="1.8" />
-      <module name="demo-elasticsearch-rest-level-client" target="11" />
-      <module name="es-demo" target="1.8" />
+      <module name="demo-elasticsearch-rest-level-client" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

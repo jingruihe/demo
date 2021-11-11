@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/demo.iml" filepath="$PROJECT_DIR$/.idea/demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo-elasticsearch/demo-elasticsearch.iml" filepath="$PROJECT_DIR$/demo-elasticsearch/demo-elasticsearch.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo-elasticsearch-rest-level-client/demo-elasticsearch-rest-level-client.iml" filepath="$PROJECT_DIR$/demo-elasticsearch-rest-level-client/demo-elasticsearch-rest-level-client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/demo-elasticsearch/es-demo.iml" filepath="$PROJECT_DIR$/demo-elasticsearch/es-demo.iml" />
     </modules>
   </component>
 </project>
