@@ -6,11 +6,12 @@ server:
 spring:
   elasticsearch:
     rest:
-      uris: http://localhost:9200   #ES的连接地址，多个地址用逗号分隔
+      #ES的连接地址，多个地址用逗号分隔
+      uris: http://localhost:9200,http://localhost:9201,http://localhost:9202
 #      username: ---用户名
 #      password: ---密码
-      connection-timeout: 1000           #连接超时时间
-      read-timeout: 1000
+      connection-timeout: 10000           #连接超时时间
+      read-timeout: 10000
 #  data:
 #    elasticsearch:
 #      cluster-name: my-application
