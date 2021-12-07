@@ -1,11 +1,19 @@
 package org.es.demo;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.metrics.AvgAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.ParsedAvg;
+import org.elasticsearch.search.aggregations.metrics.ParsedSum;
+import org.elasticsearch.search.aggregations.metrics.SumAggregationBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.es.demo.constant.ESConstant;
 import org.es.demo.entity.Person;
 import org.es.demo.repository.PersonRepository;
@@ -13,19 +21,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.SearchOperations;
-import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
-import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -113,9 +119,107 @@ public class EsApplicationTests {
         Criteria criteria = new Criteria("name").is("孙权").and("age").is(19);
         Query query = new CriteriaQuery(criteria);
         SearchHits<Person> search = elasticsearchRestTemplate.search(query, Person.class);
-        search.getSearchHits().forEach(item-> {
+        search.getSearchHits().forEach(item -> {
             Person person = item.getContent();
-            System.out.println("person:"+person);
+            System.out.println("person:" + person);
+        });
+    }
+
+    /**
+     * 自定义高级查询
+     * TermsBuilder:构造聚合函数
+     * AggregationBuilders:创建聚合函数工具类
+     * BoolQueryBuilder:拼装连接(查询)条件
+     * QueryBuilders:简单的静态工厂”导入静态”使用。主要作用是查询条件(关系),如区间\精确\多值等条件
+     * NativeSearchQueryBuilder:将连接条件和聚合函数等组合
+     * SearchQuery:生成查询
+     * elasticsearchTemplate.query:进行查询
+     */
+    @Test
+    public void customAdvanceSelect() {
+        // 构造查询条件
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        // 添加基本的分词条件
+        queryBuilder.withQuery(QueryBuilders.matchQuery("remark", "东汉"));
+        // 排序条件
+        queryBuilder.withSort(SortBuilders.fieldSort("age").order(SortOrder.DESC));
+        // 分页条件
+        queryBuilder.withPageable(PageRequest.of(0, 2));
+
+        SearchHits<Person> search = elasticsearchRestTemplate.search(queryBuilder.build(), Person.class);
+        log.info("【people】总条数 = {}", search.getTotalHits());
+        search.getSearchHits().forEach(item -> {
+            log.info("【person】= {}，年龄 = {}", item.getContent().getName(), item.getContent().getAge());
+        });
+    }
+
+
+    @Test
+    public void agg() {
+        SumAggregationBuilder sumAggregationBuilder = AggregationBuilders.sum("sum_age").field("age");
+        AvgAggregationBuilder avgAggregationBuilder = AggregationBuilders.avg("avg_age").field("age");
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        // 不查询任何结果
+//        queryBuilder.withSourceFilter(new FetchSourceFilter(new String[]{""}, null));
+        NativeSearchQuery build = queryBuilder.addAggregation(sumAggregationBuilder).addAggregation(avgAggregationBuilder).build();
+        SearchHits<Person> search = elasticsearchRestTemplate.search(build, Person.class);
+        search.getAggregations().forEach(item -> {
+            if (item instanceof ParsedSum) {
+                ParsedSum parsedSum = (ParsedSum) item;
+                System.out.println(parsedSum.getName() + ":" + parsedSum.getType() + ":" + parsedSum.getValue());
+                Optional.ofNullable(item.getMetadata()).ifPresent(metadata -> {
+                    metadata.forEach((k, v) -> {
+                        System.out.println("getMetadata:" + k + ":" + v);
+                    });
+                });
+            }
+            if (item instanceof ParsedAvg) {
+                ParsedAvg parsedAvg = (ParsedAvg) item;
+                System.out.println(parsedAvg.getName() + ":" + parsedAvg.getType() + ":" + parsedAvg.getValue());
+                Optional.ofNullable(item.getMetadata()).ifPresent(metadata -> {
+                    metadata.forEach((k, v) -> {
+                        System.out.println("getMetadata:" + k + ":" + v);
+                    });
+                });
+            }
+        });
+    }
+
+    /**
+     * 测试高级聚合查询，每个国家的人有几个，每个国家的平均年龄是多少
+     */
+    @Test
+    public void advanceAgg() {
+        // 构造查询条件
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        // 不查询任何结果
+        queryBuilder.withSourceFilter(new FetchSourceFilter(new String[]{""}, null));
+
+        // 1. 添加一个新的聚合，聚合类型为terms，聚合名称为country，聚合字段为age
+        queryBuilder.addAggregation(AggregationBuilders.terms("country").field("country")
+                // 2. 在国家聚合桶内进行嵌套聚合，求平均年龄
+                .subAggregation(AggregationBuilders.avg("avg").field("age")));
+
+        log.info("【queryBuilder】= {}", JSONUtil.toJsonStr(queryBuilder.build()));
+
+        // 3. 查询
+        SearchHits<Person> search = elasticsearchRestTemplate.search(queryBuilder.build(), Person.class);
+        search.getAggregations().forEach(aggregation -> {
+            if (aggregation instanceof ParsedStringTerms) {
+                ParsedStringTerms parsedStringTerms = (ParsedStringTerms) aggregation;
+                List<? extends Terms.Bucket> buckets = parsedStringTerms.getBuckets();
+                buckets.forEach(bucket -> {
+                    String key = bucket.getKeyAsString();
+                    System.out.println("key:" + key);
+                    bucket.getAggregations().forEach(aggregation1 -> {
+                        if (aggregation1 instanceof ParsedAvg) {
+                            ParsedAvg avg = (ParsedAvg) aggregation1;
+                            System.out.println("avg:" + avg.getName() + ":" + avg.getType() + ":" + avg.getValue());
+                        }
+                    });
+                    System.out.println();
+                });
+            }
         });
     }
 
