@@ -10,8 +10,8 @@ spring:
       uris: http://localhost:9200,http://localhost:9201,http://localhost:9202
 #      username: ---用户名
 #      password: ---密码
-      connection-timeout: 10000           #连接超时时间
-      read-timeout: 10000
+      connection-timeout: 120s           #连接超时时间
+      read-timeout: 120s
 #  data:
 #    elasticsearch:
 #      cluster-name: my-application

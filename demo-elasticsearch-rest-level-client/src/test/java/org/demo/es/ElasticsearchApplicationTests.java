@@ -25,7 +25,7 @@ public class ElasticsearchApplicationTests {
      */
     @Test
     public void deleteIndexTest() {
-        personService.deleteIndex(ElasticsearchConstant.INDEX_NAME);
+        personService.deleteIndex(ElasticsearchConstant.INDEX_PERSON);
     }
 
     /**
@@ -33,7 +33,7 @@ public class ElasticsearchApplicationTests {
      */
     @Test
     public void createIndexTest() {
-        personService.createIndex(ElasticsearchConstant.INDEX_NAME);
+        personService.createIndex(ElasticsearchConstant.INDEX_PERSON);
     }
 
     /**
@@ -46,7 +46,7 @@ public class ElasticsearchApplicationTests {
         list.add(Person.builder().age(22).birthday(new Date()).country("US").id(2L).name("hiahia").remark("test2").build());
         list.add(Person.builder().age(33).birthday(new Date()).country("ID").id(3L).name("呵呵").remark("test3").build());
 
-        personService.insert(ElasticsearchConstant.INDEX_NAME, list);
+        personService.insert(ElasticsearchConstant.INDEX_PERSON, list);
     }
 
     /**
@@ -57,7 +57,7 @@ public class ElasticsearchApplicationTests {
         Person person = Person.builder().age(33).birthday(new Date()).country("ID_update").id(3L).name("呵呵update").remark("test3_update").build();
         List<Person> list = new ArrayList<>();
         list.add(person);
-        personService.update(ElasticsearchConstant.INDEX_NAME, list);
+        personService.update(ElasticsearchConstant.INDEX_PERSON, list);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ElasticsearchApplicationTests {
      */
     @Test
     public void deleteTest() {
-        personService.delete(ElasticsearchConstant.INDEX_NAME, Person.builder().id(1L).build());
+        personService.delete(ElasticsearchConstant.INDEX_PERSON, Person.builder().id(1L).build());
     }
 
     /**
@@ -73,7 +73,7 @@ public class ElasticsearchApplicationTests {
      */
     @Test
     public void searchListTest() {
-        List<Person> personList = personService.searchList(ElasticsearchConstant.INDEX_NAME);
+        List<Person> personList = personService.searchList(ElasticsearchConstant.INDEX_PERSON);
         System.out.println(personList);
     }
 

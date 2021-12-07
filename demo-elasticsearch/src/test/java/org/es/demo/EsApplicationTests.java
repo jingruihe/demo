@@ -45,7 +45,7 @@ public class EsApplicationTests {
 
     @Test
     public void testCreateIndex() {
-        IndexOperations indexOperations = elasticsearchRestTemplate.indexOps(IndexCoordinates.of(ESConstant.INDEX_NAME));
+        IndexOperations indexOperations = elasticsearchRestTemplate.indexOps(IndexCoordinates.of(ESConstant.INDEX_PERSON));
         indexOperations.create();
 //        // 配置映射，会根据Item类中的id、Field等字段来自动完成映射
 //        Document mapping = indexOperations.createMapping();
@@ -54,13 +54,13 @@ public class EsApplicationTests {
 
     @Test
     public void testDeleteIndex() {
-        log.info(elasticsearchRestTemplate.indexOps(IndexCoordinates.of(ESConstant.INDEX_NAME)).delete() + "");
+        log.info(elasticsearchRestTemplate.indexOps(IndexCoordinates.of(ESConstant.INDEX_PERSON)).delete() + "");
     }
 
     @Test
     public void indexExists() {
         //不要使用 elasticsearchRestTemplate.indexOps(Person.class)，会自动创建
-        log.info(elasticsearchRestTemplate.indexOps(IndexCoordinates.of(ESConstant.INDEX_NAME)).exists() + "");
+        log.info(elasticsearchRestTemplate.indexOps(IndexCoordinates.of(ESConstant.INDEX_PERSON)).exists() + "");
     }
 
     @Test
