@@ -36,19 +36,23 @@ public class PerformanceApplicationTests {
         indexOperations.create();
     }
 
+    /**
+     * -Xms3g -Xmx3g 单机配置下：
+     * 插入100w耗时：63789
+     */
     @Test
     public void saveList() {
         long l = System.currentTimeMillis();
         List<Student> students = new ArrayList<>();
-        for (int i = 0; i < 10000; i++) {
+        int start = 0;
+        for (int i = start; i < 1000000; i++) {
             Student student = new Student((long) i, "学生" + i, i, DateUtil.parse("1988-01-02 03:04:05"), i % 2 == 0 ? "男" : "女", System.currentTimeMillis() + "");
-//            if (students.size()>10000){
-//                repo.saveAll(students);
-//                students = new ArrayList<>();
-//            }
             students.add(student);
-            repo.saveAll(students);
         }
+        List<List<Student>> partition = Lists.partition(students, 100000);
+        partition.forEach(s -> {
+            repo.saveAll(s);
+        });
         log.info("插入100w耗时：{}", (System.currentTimeMillis()-l));
     }
 }
