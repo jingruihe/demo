@@ -11,6 +11,12 @@
     <modules>
         <module>demo-elasticsearch</module>
         <module>demo-elasticsearch-rest-level-client</module>
+        <module>demo-kafka</module>
+        <module>kafka-demo</module>
+        <module>demo-kafka</module>
+        <module>demo-kafka-producer</module>
+        <module>demo-kafka-consumer1</module>
+        <module>demo-kafka-consumer2</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -44,6 +50,10 @@
     </repositories>-->
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

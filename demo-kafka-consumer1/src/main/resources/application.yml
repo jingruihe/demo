@@ -1,0 +1,11 @@
+server:
+  port: 9002
+
+kafka:
+  topic: demo-kafka
+
+#spring:
+#  kafka:
+#    bootstrap-servers: kafka1:9092,kafka2:9093,kafka3:9094
+#    consumer:
+#      group-id: demoGroupTest

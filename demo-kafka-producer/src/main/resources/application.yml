@@ -1,0 +1,22 @@
+server:
+  port: 9001
+# \u81EA\u5B9A\u4E49\u5C5E\u6027
+kafka:
+  topic: demo-kafka
+
+# \u914D\u7F6EKafka
+spring:
+  kafka:
+    bootstrap-servers: 192.168.1.121:9090,192.168.1.121:9091,192.168.1.121:9092
+      # producer:   # \u914D\u7F6E\u751F\u4EA7\u8005
+    # key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    # value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+#    consumer:   # \u914D\u7F6E\u6D88\u8D39\u8005
+#      group-id: demoGroupTest  # \u6D88\u8D39\u8005\u7EC4
+      # key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+
+
+
