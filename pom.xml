@@ -15,6 +15,7 @@
         <module>demo-kafka-consumer1</module>
         <module>demo-kafka-consumer2</module>
         <module>demo-shardingjdbc</module>
+        <module>demo-redis</module>
     </modules>
 
     <packaging>pom</packaging>
