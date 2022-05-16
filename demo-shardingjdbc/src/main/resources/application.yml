@@ -23,38 +23,74 @@ spring:
         # 会打印Actual SQL 和 Logic SQL
         show: true
     sharding:
-      broadcast-tables: ad_config
       tables:
-        ad_config:
-          key-generator:
-            column: id
-            type: SNOWFLAKE
         product_order:
-          # 分库规则，使用user_id取余
-          database-strategy:
-            inline:
-              sharding-column: user_id
-              algorithm-expression: ds$->{user_id % 2}
-#          actual-data-nodes: ds0.product_order_$->{0..1}
           actual-data-nodes: ds$->{0..1}.product_order_$->{0..1}
-          # 分表规则，使用user_id取余
-          # 指定product_order表的数据分布情况，配置数据节点,行表达式标识符使用 ${...} 或 $->{...}，
-          # 但前者与 Spring 本身的文件占位符冲突，所以在 Spring 环境中建议使用 $->{...}
+          database-strategy:
+            hint:
+              algorithm-class-name: com.demo.strategy.CustomDBHintShardingAlgorithm
           table-strategy:
-            inline:
-              algorithm-expression: product_order_$->{id % 2}
-              sharding-column: id
-          key-generator: # 雪花算法
-            column: id
-            type: SNOWFLAKE
-            props:
-              worker: # 配置workerId
-                id: 1
-        product_order_item:
-          actual-data-nodes: ds$->{0..1}.product_order_item_$->{0..1}
-          table-strategy:
-            inline:
-              sharding-column: product_order_id
-              algorithm-expression: product_order_item_$->{product_order_id % 2}
-      # 绑定表
-      binding‐tables[0]: product_order,product_order_item
+            hint:
+              algorithm-class-name: com.demo.strategy.CustomTableHintShardingAlgorithm
+
+#    sharding:
+#      tables:
+#        product_order:
+#          actual-data-nodes: ds$->{0..1}.product_order_$->{0..1}
+#          table-strategy:
+#            complex:
+#              sharding-columns: user_id,id
+#            algorithm-class-name: com.demo.strategy.CustomComplexKeysShardingAlgorithm
+
+#    sharding:
+#      tables:
+#        product_order:
+#          database-strategy:
+#            standard:
+#              sharding-column: user_id
+#              precise-algorithm-class-name: com.demo.strategy.CustomDBPreciseShardingAlgorithm
+#          actual-data-nodes: ds$->{0..1}.product_order_$->{0..1}
+#          table-strategy:
+#            standard:
+#              sharding-column: id
+#              precise-algorithm-class-name: com.demo.strategy.CustomTablePreciseShardingAlgorithm
+#              range-algorithm-class-name: com.demo.strategy.CustomRangeShardingAlgorithm
+
+#    sharding:
+#      broadcast-tables: ad_config
+#      tables:
+#        ad_config:
+#          key-generator:
+#            column: id
+#            type: SNOWFLAKE
+#        product_order:
+#          # 分库规则，使用user_id取余
+#          database-strategy:
+#            inline:
+#              sharding-column: user_id
+#              algorithm-expression: ds$->{user_id % 2}
+##          actual-data-nodes: ds0.product_order_$->{0..1}
+#          actual-data-nodes: ds$->{0..1}.product_order_$->{0..1}
+#          # 分表规则，使用user_id取余
+#          # 指定product_order表的数据分布情况，配置数据节点,行表达式标识符使用 ${...} 或 $->{...}，
+#          # 但前者与 Spring 本身的文件占位符冲突，所以在 Spring 环境中建议使用 $->{...}
+#          table-strategy:
+#            inline:
+#              algorithm-expression: product_order_$->{id % 2}
+#              sharding-column: id
+#          key-generator: # 雪花算法
+#            column: id
+#            type: SNOWFLAKE
+#            props:
+#              worker: # 配置workerId
+#                id: 1
+#        product_order_item:
+#          actual-data-nodes: ds$->{0..1}.product_order_item_$->{0..1}
+#          table-strategy:
+#            inline:
+#              sharding-column: product_order_id
+#              algorithm-expression: product_order_item_$->{product_order_id % 2}
+#      # 绑定表
+#      binding‐tables[0]: product_order,product_order_item
+
+
