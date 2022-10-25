@@ -1,5 +1,6 @@
 package com.demo;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.demo.entity.AdConfigDO;
 import com.demo.entity.ProductOrderDO;
 import com.demo.entity.ProductOrderItemDO;
@@ -7,6 +8,7 @@ import com.demo.mapper.AdConfigMapper;
 import com.demo.mapper.ProductOrderItemMapper;
 import com.demo.mapper.ProductOrderMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shardingsphere.api.hint.HintManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,8 @@ public class DbTest {
         //}
     }
 
+
+
     @Test
     public void testSaveAdConfig(){
 
@@ -80,6 +84,52 @@ public class DbTest {
 
         List<Object> list = productOrderMapper.listProductOrderDetail();
         System.out.println(list);
+    }
+
+
+    @Test
+    public void testCustomSaveProductOrder(){
+        ProductOrderDO productOrderDO = new ProductOrderDO();
+        productOrderDO.setCreateTime(new Date());
+        productOrderDO.setNickname("自定义分库分表_"+222);
+        productOrderDO.setOutTradeNo(UUID.randomUUID().toString().substring(0,32));
+        productOrderDO.setPayAmount(100.00);
+        productOrderDO.setState("PAY");
+        productOrderDO.setUserId(Long.valueOf(2+""));
+        productOrderMapper.insert(productOrderDO);
+        System.out.println(productOrderDO.getId());
+    }
+
+    @Test
+    public void testBetween(){
+        List<ProductOrderDO> list = productOrderMapper.selectList(new QueryWrapper<ProductOrderDO>().between("id", 1L, 2L));
+        System.out.println(list);
+    }
+    @Test
+    public void testComplex(){
+        List<ProductOrderDO> list = productOrderMapper.selectList(
+                new QueryWrapper<ProductOrderDO>().eq("id", 66L).eq("user_id", 99L));
+        System.out.println(list);
+    }
+
+    @Test
+    public void testHint() {
+        // 清除掉历史的规则
+        HintManager.clear();
+        //Hint分片策略必须要使用 HintManager工具类
+        HintManager hintManager = HintManager.getInstance();
+        // 设置库的分片健,value用于库分片取模，
+        hintManager.addDatabaseShardingValue("product_order",3L);
+
+        // 设置表的分片健,value用于表分片取模，
+        //hintManager.addTableShardingValue("product_order", 7L);
+        hintManager.addTableShardingValue("product_order", 8L);
+
+        // 如果在读写分离数据库中，Hint 可以强制读主库（主从复制存在一定延时，但在业务场景中，可能更需要保证数据的实时性）
+        //hintManager.setMasterRouteOnly();
+
+        //对应的value只做查询，不做sql解析
+        productOrderMapper.selectList(new QueryWrapper<ProductOrderDO>().eq("id", 66L));
     }
 
 }
