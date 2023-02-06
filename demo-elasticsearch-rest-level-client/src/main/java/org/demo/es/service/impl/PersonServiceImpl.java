@@ -38,7 +38,6 @@ public class PersonServiceImpl extends BaseElasticsearchService implements Perso
 
     @Override
     public void insert(String index, List<Person> list) {
-
         try {
             list.forEach(person -> {
                 IndexRequest request = buildIndexRequest(index, String.valueOf(person.getId()), person);

@@ -18,6 +18,7 @@
         <module>demo-redis</module>
         <module>demo-algorithm</module>
         <module>demo-lua</module>
+        <module>demo-concurrent</module>
     </modules>
 
     <packaging>pom</packaging>

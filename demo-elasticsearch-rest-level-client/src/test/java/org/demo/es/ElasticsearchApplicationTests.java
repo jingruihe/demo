@@ -12,6 +12,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -40,13 +43,32 @@ public class ElasticsearchApplicationTests {
      * 测试新增
      */
     @Test
-    public void insertTest() {
-        List<Person> list = new ArrayList<>();
-        list.add(Person.builder().age(11).birthday(new Date()).country("CN").id(1L).name("哈哈").remark("test1").build());
-        list.add(Person.builder().age(22).birthday(new Date()).country("US").id(2L).name("hiahia").remark("test2").build());
-        list.add(Person.builder().age(33).birthday(new Date()).country("ID").id(3L).name("呵呵").remark("test3").build());
+    public void insertTest() throws InterruptedException {
 
-        personService.insert(ElasticsearchConstant.INDEX_PERSON, list);
+        Random r = new Random();
+        ExecutorService pool = Executors.newFixedThreadPool(20);
+        long l = System.currentTimeMillis();
+
+        for (int i = 0; i < 1000; i++) {
+            int finalI = i;
+            pool.submit(new Runnable() {
+                @Override
+                public void run() {
+                    // 每次插入1条
+                    List<Person> list = new ArrayList<>();
+                    Person person = Person.builder().age(r.nextInt(100)).birthday(new Date()).country("CN").id((long) finalI).name("哈哈").remark("test1").build();
+                    list.add(person);
+                    if (list.size() >= 1000){
+                        personService.insert(ElasticsearchConstant.INDEX_PERSON, list);
+                    }
+                }
+            });
+//            if (i % 10000 == 0){
+//                System.out.println((i/10000) + "W数据耗时"+(System.currentTimeMillis() - l));
+//            }
+        }
+        System.out.println("耗时："+(System.currentTimeMillis() - l));
+        Thread.sleep(10000);
     }
 
     /**
