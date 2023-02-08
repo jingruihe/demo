@@ -9,7 +9,6 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <modules>
-        <module>demo-elasticsearch</module>
         <module>demo-elasticsearch-rest-level-client</module>
         <module>demo-kafka-producer</module>
         <module>demo-kafka-consumer1</module>
@@ -19,6 +18,7 @@
         <module>demo-algorithm</module>
         <module>demo-lua</module>
         <module>demo-concurrent</module>
+        <module>demo-elasticsearch</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -34,6 +34,7 @@
         <spring.boot.version>2.5.1</spring.boot.version>
         <mysql.version>8.0.21</mysql.version>
         <hutool.version>5.4.5</hutool.version>
+        <guava.version>29.0-jre</guava.version>
         <guava.version>29.0-jre</guava.version>
     </properties>
 
@@ -89,6 +90,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+                <version>2.1.7.RELEASE</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

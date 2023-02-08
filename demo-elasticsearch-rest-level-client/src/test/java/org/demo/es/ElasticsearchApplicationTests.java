@@ -45,30 +45,35 @@ public class ElasticsearchApplicationTests {
     @Test
     public void insertTest() throws InterruptedException {
 
-        Random r = new Random();
-        ExecutorService pool = Executors.newFixedThreadPool(20);
-        long l = System.currentTimeMillis();
-
-        for (int i = 0; i < 1000; i++) {
-            int finalI = i;
-            pool.submit(new Runnable() {
-                @Override
-                public void run() {
-                    // 每次插入1条
-                    List<Person> list = new ArrayList<>();
-                    Person person = Person.builder().age(r.nextInt(100)).birthday(new Date()).country("CN").id((long) finalI).name("哈哈").remark("test1").build();
-                    list.add(person);
-                    if (list.size() >= 1000){
-                        personService.insert(ElasticsearchConstant.INDEX_PERSON, list);
-                    }
-                }
-            });
-//            if (i % 10000 == 0){
-//                System.out.println((i/10000) + "W数据耗时"+(System.currentTimeMillis() - l));
-//            }
-        }
-        System.out.println("耗时："+(System.currentTimeMillis() - l));
-        Thread.sleep(10000);
+        List<Person> list = new ArrayList<>();
+        Person person = Person.builder().age(1).birthday(new Date()).country("CN").id(1L).name("哈哈").remark("test1").build();
+        list.add(person);
+        personService.insert(ElasticsearchConstant.INDEX_PERSON, list);
+//
+//        Random r = new Random();
+//        ExecutorService pool = Executors.newFixedThreadPool(20);
+//        long l = System.currentTimeMillis();
+//
+//        for (int i = 0; i < 1000; i++) {
+//            int finalI = i;
+//            pool.submit(new Runnable() {
+//                @Override
+//                public void run() {
+//                    // 每次插入1条
+//                    List<Person> list = new ArrayList<>();
+//                    Person person = Person.builder().age(r.nextInt(100)).birthday(new Date()).country("CN").id((long) finalI).name("哈哈").remark("test1").build();
+//                    list.add(person);
+//                    if (list.size() >= 1000){
+//                        personService.insert(ElasticsearchConstant.INDEX_PERSON, list);
+//                    }
+//                }
+//            });
+////            if (i % 10000 == 0){
+////                System.out.println((i/10000) + "W数据耗时"+(System.currentTimeMillis() - l));
+////            }
+//        }
+//        System.out.println("耗时："+(System.currentTimeMillis() - l));
+//        Thread.sleep(10000);
     }
 
     /**

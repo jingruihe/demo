@@ -54,24 +54,30 @@
         </dependency>
 
         <!-- elasticsearch -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
-            <version>7.15.1</version>
-        </dependency>
+            <version>8.2.0</version>
+        </dependency>-->
 
         <!-- elasticsearch-rest-client -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-client</artifactId>
-            <version>7.15.1</version>
+            <version>8.2.0</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>co.elastic.clients</groupId>
+            <artifactId>elasticsearch-java</artifactId>
+            <version>8.2.0</version>
         </dependency>
 
         <!-- elasticsearch-rest-high-level-client -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
-            <version>7.15.1</version>
+            <version>8.2.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.elasticsearch.client</groupId>
@@ -82,7 +88,7 @@
                     <artifactId>elasticsearch</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
 
         <!-- lombok -->
         <dependency>

@@ -1,21 +1,20 @@
-server:
-  port: 8080
-  servlet:
-    context-path: /
-
-spring:
-  elasticsearch:
-    rest:
-      #ES的连接地址，多个地址用逗号分隔
-      uris: http://localhost:9200,http://localhost:9201,http://localhost:9202
-#      username: ---用户名
-#      password: ---密码
-      connection-timeout: 120s           #连接超时时间
-      read-timeout: 120s
+#demo:
 #  data:
 #    elasticsearch:
-#      cluster-name: my-application
-#      cluster-nodes: localhost:9300
+#      cluster-name: elasticsearch
+#      cluster-nodes: localhost:9200
+#      index:
+#        number-of-replicas: 0
+#        number-of-shards: 3
 
-logging:
-  level.root: info
+#spring:
+#  elasticsearch:
+#    rest:
+#      uris: ["http://127.0.0.1:9200","http://127.0.0.1:9201","http://127.0.0.1:9202"]
+#      connection-timeout: 10s
+#      read-timeout: 30s
+
+
+elasticsearch:
+  # 多个IP逗号隔开
+  hosts: 127.0.0.1:9200,127.0.0.1:9201,127.0.0.1:9202
