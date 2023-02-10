@@ -4,14 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Product {
+public class Student {
 
-    private static final long serialVersionUID = 1L;
-    private String no;
     private String name;
-    private String desc;
-    private Double price;
+    private Integer age;
+    private List<String> hobby;
+    private String birthday;
+
+    private List<Subject> subject;
 }

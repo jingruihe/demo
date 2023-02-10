@@ -57,6 +57,11 @@
         </dependency>
         <!-- elasticsearch end -->
 
+        <!-- hutool工具类 -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
     </dependencies>
 
 
