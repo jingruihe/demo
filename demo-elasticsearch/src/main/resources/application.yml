@@ -17,7 +17,7 @@
 
 elasticsearch:
   # 多个IP逗号隔开
-#  hosts: 127.0.0.1:9200,127.0.0.1:9201,127.0.0.1:9202
-  hosts: 192.168.1.110:19200
-  username: elastic
-  password: qishu1@3
+  hosts: 127.0.0.1:9200,127.0.0.1:9201,127.0.0.1:9202
+#  hosts: 192.168.1.110:19200
+#  username: elastic
+#  password: qishu1@3

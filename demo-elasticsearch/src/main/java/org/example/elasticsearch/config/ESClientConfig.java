@@ -1,6 +1,5 @@
 package org.example.elasticsearch.config;
 
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
@@ -8,14 +7,15 @@ import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.rest_client.RestClientOptions;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import lombok.Setter;
-import org.apache.http.*;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HttpContext;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
@@ -84,14 +84,17 @@ public class ESClientConfig {
                                     new UsernamePasswordCredentials(username, password));
                             httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
                         }
-                        httpClientBuilder.setDefaultHeaders(
-                                // 添加请求头
-                                        ListUtil.of(new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())))
+                        httpClientBuilder
+//                                .setDefaultHeaders(
+//                                        // 添加请求头
+//                                        ListUtil.of(new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString()),
+//                                                new BasicHeader("Accept", "application/vnd.elasticsearch+json;compatible-with=8"))
+//                                )
                                 // 前置拦截器
                                 .addInterceptorFirst(new HttpResponseInterceptor() {
                                     @Override
                                     public void process(HttpResponse httpResponse, HttpContext httpContext) throws HttpException, IOException {
-                                        System.out.println("httpResponse = " + httpResponse + ", httpContext = " + httpContext);
+//                                        System.out.println("httpResponse = " + httpResponse + ", httpContext = " + httpContext);
                                     }
                                 })
                                 // 后置拦截器添加相应请求头
@@ -103,12 +106,13 @@ public class ESClientConfig {
                 }
         );
         RestClient restClient = builder.build();
-        return new RestClientTransport(restClient, new JacksonJsonpMapper());
-        // 这种方式也可以添加请求头，推荐上面这种
-//                .withRequestOptions(new RestClientOptions.Builder(
-//                        RequestOptions.DEFAULT.toBuilder()
-//                                .addHeader("Content-Type", "application/json;charset=UTF-8"))
-//                        .build());
+        return new RestClientTransport(restClient, new JacksonJsonpMapper())
+                // 这种方式也可以添加请求头，推荐上面这种
+                .withRequestOptions(new RestClientOptions.Builder(
+                        RequestOptions.DEFAULT.toBuilder()
+//                                .addHeader("Content-Type", "application/json;charset=UTF-8")
+                                .addHeader("Accept", "application/vnd.elasticsearch+json;compatible-with=8"))
+                        .build());
     }
 
 }
